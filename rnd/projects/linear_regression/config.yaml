@@ -1,0 +1,7 @@
+trainingInput:
+  scaleTier: BASIC
+  pythonVersion: '3.5'
+  runtimeVersion: '1.4'
+  args:
+    - '--train-file'
+    - 'gs://rnd-shared/datasets/pre-processed/linear_regression/linear/v0/linear.train.csv'
