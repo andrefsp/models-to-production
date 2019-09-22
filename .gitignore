@@ -1,4 +1,4 @@
 *swp
 *swo
 *.pyc
-*./export/*
+shared-storage/exports/
