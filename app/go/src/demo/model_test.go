@@ -14,5 +14,4 @@ func TestLoadAndPredict(t *testing.T) {
 	prediction, err := model.Predict(10)
 	assert.Nil(t, err)
 	assert.NotEqual(t, prediction, 0)
-
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"log"
 
 	tensorflow "github.com/tensorflow/tensorflow/tensorflow/go"
 )
@@ -24,8 +24,28 @@ func (l *linearRegression) Load() error {
 	return nil
 }
 
-func (l *linearRegression) Predict(value int32) (int32, error) {
-	return 0, errors.New("does not predict")
+func (l *linearRegression) Predict(value float32) (float32, error) {
+	inputTensor, err := tensorflow.NewTensor([]float32{value})
+	if err != nil {
+		return 0, err
+	}
+
+	resultTensor, err := l.tfModel.Session.Run(
+		map[tensorflow.Output]*tensorflow.Tensor{
+			l.tfModel.Graph.Operation("X").Output(0): inputTensor,
+		},
+		[]tensorflow.Output{
+			l.tfModel.Graph.Operation("model").Output(0),
+		},
+		nil,
+	)
+
+	if err != nil {
+		log.Printf("%s", err)
+		return 0, err
+	}
+
+	return resultTensor[0].Value().([]float32)[0], nil
 }
 
 func NewLinearRegression(path string) *linearRegression {
