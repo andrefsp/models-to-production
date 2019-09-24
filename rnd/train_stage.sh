@@ -12,4 +12,4 @@ JOB_DIR=$(realpath ".")/../shared-storage/exports/${MODEL_NAME}/${VERSION}/
 
 mkdir -p ${JOB_DIR}
 
-PYTHONPATH=./:./projects/linear_regression/ JOB_DIR=${JOB_DIR} VERSION=${VERSION}  ./projects/linear_regression/train_local.sh
+PYTHONPATH=./:./projects/linear_regression/ JOB_DIR=${JOB_DIR} VERSION=${VERSION}  ./projects/${MODEL_NAME}/train_local.sh

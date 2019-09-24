@@ -6,7 +6,7 @@ from common.model_builder import Model
 class LinearModel(Model):
 
     def build(self):
-        # Inputs
+        # Input Placeholder (data points)
         self.X = tf.placeholder(tf.float32, name='X')
         self.Y = tf.placeholder(tf.float32, name='Y')
 
@@ -18,15 +18,17 @@ class LinearModel(Model):
         self.model = tf.add(tf.multiply(self.M, self.X), self.B, name='model')
 
         # Model save and serving signature map
-        self.tensor_info_X = tf.saved_model.utils.build_tensor_info(self.X)
-        self.tensor_info_model = tf.saved_model.utils.build_tensor_info(
-            self.model
-        )
         self.signature_def_map = {
             'serving_default': (
                 tf.saved_model.signature_def_utils.build_signature_def(
-                    inputs={'X': self.tensor_info_X},
-                    outputs={'model': self.tensor_info_model},
+                    inputs={
+                        'X': tf.saved_model.utils.build_tensor_info(self.X)
+                    },
+                    outputs={
+                        'model': tf.saved_model.utils.build_tensor_info(
+                            self.model
+                        )
+                    },
                     method_name=tf.saved_model.signature_constants.PREDICT_METHOD_NAME
                 )
             ),

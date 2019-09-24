@@ -1,0 +1,4 @@
+*.so
+*.h
+
+ldpath/darwin/include/tensorflow/c/LICENSE
