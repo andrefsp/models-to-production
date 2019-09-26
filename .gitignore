@@ -5,3 +5,4 @@ shared-storage/exports/
 app/go/src/demo/libs/ldpath/linux/
 app/go/src/github.com/
 app/go/src/golang.org/
+app/go/pkg/
