@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-var exportPath = os.Getenv("MODEL_EXPORT_PATH")
+var exportPath = os.Getenv("EXPORT_PATH")
 
 const tfTagServing = "serve"
 
@@ -21,7 +21,13 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// get input argument
 		x := r.URL.Query().Get("X")
+		if x == "" {
+			x = r.URL.Query().Get("x")
+		}
+
+		log.Printf("Resolving model(x=%s) \n", x)
 
 		value, err := strconv.ParseFloat(x, 64)
 		if err != nil {
@@ -36,5 +42,8 @@ func main() {
 
 		fmt.Fprintf(w, "f(%s) = %f", x, prediction)
 	})
+
+	log.Printf("Serving model on port :8080")
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
