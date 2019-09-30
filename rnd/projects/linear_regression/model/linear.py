@@ -1,6 +1,8 @@
+import json
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+from common import utils
 from common.model_builder import Model
 
 
@@ -87,6 +89,18 @@ class LinearModel(Model):
             signature_def_map=self.signature_def_map,
         )
         builder.save()
+
+        tf.gfile.GFile(
+            utils.normpath(self.config.export_path + '/io_config.json'),
+            mode='w'
+        ).write(
+            json.dumps({
+                'input_name': self.X.name,
+                'output_name': self.model.name,
+                'input_type': self.X.dtype.name,
+                'output_type': self.model.dtype.name,
+            })
+        )
 
     def evaluate(self, session, eval_data_iterator, summary_writer=None):
         x_train = []
