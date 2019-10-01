@@ -11,7 +11,8 @@ POINTS = [p for p in range(50)]
 
 class LinearModel(Model):
 
-    def plot(self, session, points=POINTS, pause=0.1, target_iterator=None):
+    def plot(self, session=None, points=POINTS, pause=0.1,
+             target_iterator=None, block=False):
 
         x_train = []
         y_train = []
@@ -19,14 +20,14 @@ class LinearModel(Model):
             x_train.append(float(row['X']))
             y_train.append(float(row['Y']))
 
-        y = session.run(self.model, feed_dict={self.X: points})
-
         plt.axis([0, len(POINTS), 0, len(POINTS)])
-
         plt.scatter(x_train, y_train, c='g')
-        plt.plot(points, y)
 
-        plt.show(block=False)
+        if session:
+            y = session.run(self.model, feed_dict={self.X: points})
+            plt.plot(points, y)
+
+        plt.show(block=block)
 
         plt.xticks(range(0, len(POINTS), 10))
         plt.yticks(range(0, len(POINTS), 10))
@@ -117,20 +118,24 @@ class LinearModel(Model):
 
     def train(self, session, train_data_iterator, dev_data_iterator,
               summary_writer=None):
+
         session.run(tf.global_variables_initializer())
 
         print("start:\t Y = %s*X + %s" % (
             session.run(self.M), session.run(self.B))
         )
 
+        self.plot(target_iterator=train_data_iterator, block=True)
+
         for epoch in range(self.config.epochs):
             if epoch % 100 == 0:
-                print("\t Epoch %s ::: \tY = %s*X + %s" % (
-                    epoch, session.run(self.M), session.run(self.B))
-                )
-
                 # run evaluation at the each 100 epochs...
-                print("\t\t %s" % self.evaluate(session, dev_data_iterator))
+                error = self.evaluate(session, dev_data_iterator)
+
+                # print current training progress
+                print("\t Epoch %s ::: \tY = %s*X + %s \t %s" % (
+                    epoch, session.run(self.M), session.run(self.B), error)
+                )
 
                 # show current function
                 self.plot(session, target_iterator=train_data_iterator)
@@ -149,6 +154,7 @@ class LinearModel(Model):
                 })
 
         self.save_tf_export(session)
+        self.plot(session, target_iterator=train_data_iterator, block=True)
 
     def load_tf_export(self, session):
         # Load saved model
