@@ -3,7 +3,7 @@ from setuptools import setup
 
 REQUIRED_PACKAGES = [
     "tensorflow==1.13.0",
-    "numpy==1.13.3",
+    "numpy==1.22.0",
 ]
 
 setup(
